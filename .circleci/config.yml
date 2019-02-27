@@ -1,0 +1,26 @@
+version: 2
+jobs:
+  build:
+    working_directory: /the-book-pundit-service
+    docker:
+      - image: docker:18.09.3
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install Docker Compose
+          command: |
+            apk add --no-cache --update py-pip
+            pip install docker-compose==1.23.2
+      - run:
+          name: Run docker-compose
+          command: |
+            docker-compose build
+      - deploy:
+          name: Push application docker image
+          command: |
+            docker login -u $DOCKER_HUB_USER_ID -p $DOCKER_HUB_PWD
+            docker tag the-book-pundit $DOCKER_HUB_USER_ID/the-book-pundit:$CIRCLE_SHA1
+            docker tag the-book-pundit $DOCKER_HUB_USER_ID/the-book-pundit:latest
+            docker push $DOCKER_HUB_USER_ID/the-book-pundit:$CIRCLE_SHA1
+            docker push $DOCKER_HUB_USER_ID/the-book-pundit:latest

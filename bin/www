@@ -1,4 +1,6 @@
-const root = process.env.PWD;
+const path = require('path');
+
+const root = path.resolve(__dirname, '..');
 const srcPath = `${root}/src`;
 global._require = name => require(`${srcPath}/${name}`);
 

@@ -28,7 +28,7 @@ const sql = file => {
     // Something is wrong with our query file :(
     // Testing all files through queries can be cumbersome,
     // so we also report it here, while loading the module:
-    logger.err('query file', { qf: qf.error });
+    logger.error('query file', { qf: qf.error });
   }
 
   return qf;

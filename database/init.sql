@@ -18,7 +18,7 @@ SET timezone TO 'UTC';
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS BookSearchList (
   search_book_title TEXT UNIQUE NOT NULL,
-  book_list JSONB NOT NULL,
+  book_list JSONB,
 
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   last_updated TIMESTAMPTZ NOT NULL DEFAULT now(),
@@ -36,7 +36,7 @@ WITH (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS Review (
   book_id BIGINT UNIQUE NOT NULL,
-  reviews JSONB NOT NULL,
+  reviews JSONB,
 
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   last_updated TIMESTAMPTZ NOT NULL DEFAULT now(),

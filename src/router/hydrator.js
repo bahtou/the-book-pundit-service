@@ -28,17 +28,23 @@ async function hydrateReviews(ctx, next) {
 
   logger.info({ reqId, bookId });
 
-  // try {
-  //   data = await pgEndpoint('GET_BOOK_REVIEWS', { reqId, bookId });
-  // } catch (err) {
-  //   logger.error('GET_GET_BOOK_REVIEWSBOOK_LIST', err);
-  //   throw err;
-  // }
+  try {
+    data = await pgEndpoint('GET_BOOK_REVIEWS', { reqId, bookId });
+  } catch (err) {
+    logger.error('GET_GET_BOOK_REVIEWSBOOK_LIST', err);
+    throw err;
+  }
 
-  // if (data && data.reviews) {
-  //   logger.info('--cached', { reqId, bookId });
-  //   return ctx.body = data.reviews;
-  // }
+
+  if (data && data.reviews) {
+    logger.info('--cached', { reqId, bookId });
+    return ctx.body = [ data.reviews ];
+  }
+
+  if (data && !data.reviews) {
+    logger.info('--no reviews', { reqId, bookId });
+    return ctx.body = [];
+  }
 
   return next();
 }

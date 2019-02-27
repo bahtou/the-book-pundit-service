@@ -1,20 +1,22 @@
-const { toJSON } = _require('utils');
-
-
 async function returnBookReviews(ctx, next) {
   const { reqId, state:{ bookId, bookReviews }} = ctx;
-  const reviews = toJSON(reqId, bookReviews[0]);
-  const reviewsCount = reviews.length;
+  const reviewsCount = bookReviews.length;
 
-  logger.info({ reqId, reviewsCount });
+  /**
+   * * bookReviews should be an array of arrays
+   * * [ [], [], [] ]
+   *
+   * * for now, pop the first array and send
+   */
+
+  logger.info({ reqId });
 
   if (reviewsCount === 0) {
-    logger.info('--no reviews', { reqId, bookId });
-    return ctx.body = [ reviews ];
+    logger.info('--no reviews', { reqId, bookId, bookReviews });
   }
 
   next();
-  return ctx.body = [ reviews ];
+  return ctx.body = bookReviews;
 }
 
 

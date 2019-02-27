@@ -8,6 +8,10 @@ In order to run the full application [The Book Pundit APIs](https://github.com/b
 
 `docker-compose up -d`
 
+>An external docker network `api_net` needs to exist in order for the application to function. Run the following command if the network has not been created
+
+`docker network create api_net`
+
 ## APIs
 
 ### /search?q=<search_term>
@@ -20,7 +24,7 @@ In order to run the full application [The Book Pundit APIs](https://github.com/b
 
 ## Endpoints
 
-### gr-api
+### API-GR
 
 * /gr/books/search?q=<search_term>
 * /gr/books/${bookId}/reviews;
@@ -35,3 +39,14 @@ In order to run the full application [The Book Pundit APIs](https://github.com/b
 ## Init Database
 
 `psql -U pundit -d thebookpundit -a -f ./database/init.sql -v ON_ERROR_STOP=1 -1`
+
+## Vultr Provisioning
+
+Helpful [APIs](https://www.vultr.com/api/)
+
+### docker-machine
+docker-machine create --driver vultr --vultr-api-key=<ENTER-HERE> --vultr-region-id=3 --vultr-plan-id=202 --vultr-os-id=244 --vultr-ssh-key-id=<ENTER-HERE> --vultr-ipv6=true --vultr-tag=manager node1
+
+### SSL
+
+follow this setup https://www.vultr.com/docs/setup-letsencrypt-on-linux

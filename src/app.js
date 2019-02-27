@@ -1,4 +1,5 @@
 const Koa = require('koa');
+const cors = require('@koa/cors');
 const koaLogger = require('koa-logger');
 
 const { env } = require('./config');
@@ -12,6 +13,7 @@ if (env !== 'production') {
 
 app.proxy = true;
 app
+  .use(cors())
   .use(middleware.assignRequestId)
   .on('close', callback => {
     logger.warn('app closing');
