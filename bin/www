@@ -1,0 +1,62 @@
+const root = process.env.PWD;
+const srcPath = `${root}/src`;
+global._require = name => require(`${srcPath}/${name}`);
+
+
+let app;
+let httpServer;
+let config;
+
+async function startServer() {
+  const http = require('http');
+
+  try {
+    // move to lib
+    config = await require(`${srcPath}/config`);
+    await require(`${srcPath}/onBoot/logger`)();
+    await require(`${srcPath}/onBoot/postgres`)();
+  } catch (err) {
+    console.error('unable to initialize\n', err);
+    return process.exit(1);
+  }
+
+  logger.warn('Node Configuration', { config });
+
+  const { port } = config;
+  app = require(`${srcPath}/app`);
+  httpServer =
+    http.createServer(app.callback())
+      .listen(port, () => {
+        logger.warn(`HTTP server: listening on port ${port}`);
+      });
+
+  httpServer.timeout = 1800000;
+}
+
+function shutdown() {
+  logger.warn('Server shutting down');
+  logger.warn('Closing HTTP server -- not accepting new connections but keeping existing connections');
+
+  httpServer.close(err => {
+    if (err) logger.error('Server was not open when it was closed', err);
+    app.emit('close', () => {
+      process.exit(0);
+    });
+  });
+}
+
+startServer();
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+process.on('unhandledRejection', (reason, p) => {
+  logger.error(`Unhandled Rejection because of ${reason}`, { p });
+});
+
+
+/**
+ * https://nodejs.org/api/process.html
+ * https://nodejs.org/api/net.html
+ * https://nodejs.org/api/http.html
+ * https://github.com/koajs/koa/blob/master/docs/api/index.md#appcallback
+ */

@@ -1,0 +1,46 @@
+{
+  "name": "the-book-pundit-service",
+  "version": "1.0.0",
+  "description": "Node Service for The Book Pundit application",
+  "main": "./bin/www",
+  "scripts": {
+    "debug": "NODE_ENV=local nodemon --inspect ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bahtou/the-book-pundit-service.git"
+  },
+  "author": "bahtou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bahtou/the-book-pundit-service/issues"
+  },
+  "homepage": "https://github.com/bahtou/the-book-pundit-service#readme",
+  "devDependencies": {
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.14.1",
+    "koa-logger": "^3.2.0",
+    "nodemon": "^1.18.10"
+  },
+  "dependencies": {
+    "ip": "^1.1.5",
+    "koa": "^2.7.0",
+    "koa-router": "^7.4.0",
+    "os": "^0.1.1",
+    "pg-promise": "^8.5.6",
+    "superagent": "^4.1.0",
+    "uuid": "^3.3.2"
+  },
+  "nodemonConfig": {
+    "ext": "*",
+    "ignore": [
+      "node_modules/*"
+    ],
+    "verbose": true,
+    "legacy-watch": true,
+    "watch": [
+      "./src",
+      "./bin"
+    ]
+  }
+}

@@ -1,0 +1,82 @@
+version: "3.7"
+
+services:
+  the-book-pundit:
+    working_dir: /opt/app
+    image: the-book-pundit
+    container_name: the-book-pundit
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./node_modules/.bin/nodemon --inspect=0.0.0.0:9229 ./bin/www
+    ports:
+      - 3000:3000
+      - 9229:9229
+    environment:
+      - NODE_ENV=local
+      - NODE_PORT=3000
+      - APP_SERVICE=the-book-pundit
+      - GOODREADS_API_SERVICE=http://localhost:3001
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=pundit
+      - POSTGRES_PASSWORD=iheartbooks
+      - POSTGRES_DB=thebookpundit
+      - POSTGRES_POOLSIZE=10
+      - POSTGRES_IDLETIMEOUTMILLIS=20000
+      - POSTGRES_RETRY_MAX_TIME=900000
+      - POSTGRES_RETRY_CONNECTION=5000
+    volumes:
+      - ./package.json:/opt/app/package.json
+      - ./package-lock.json:/opt/app/package-lock.json
+      - type: bind
+        source: ./bin
+        target: /opt/app/bin
+        consistency: "delegated" # Docker Desktop for Mac: The container runtime’s view of the mount is authoritative. There may be delays before updates made in a container are visible on the host
+        volume:
+          nocopy: true
+      - type: bind
+        source: ./src
+        target: /opt/app/src
+        consistency: "delegated" # Docker Desktop for Mac: The container runtime’s view of the mount is authoritative. There may be delays before updates made in a container are visible on the host
+        volume:
+          nocopy: true
+      - type: volume
+        source: notused
+        target: /opt/app/node_modules
+    networks:
+      - api_net
+      - db_net
+    restart: always
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: the-book-pundit-storage
+    image: postgres:11.2-alpine
+    environment:
+      - POSTGRES_USER=pundit
+      - POSTGRES_PASSWORD=iheartbooks
+      - POSTGRES_DB=thebookpundit
+    ports:
+      - 5432:5432
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - type: volume
+        source: pgData
+        target: /var/lib/postgresql/data
+    networks:
+      - db_net
+    restart: always
+
+networks:
+  api_net:
+    external: true
+  db_net:
+    external: true
+
+volumes:
+  pgData:
+  notused:
+
+
