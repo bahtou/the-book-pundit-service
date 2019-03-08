@@ -1,9 +1,9 @@
-const { toJSON } = _require('utils');
+const { parseJSON } = _require('utils');
 
 
 async function returnBookList(ctx, next) {
   const { reqId, state:{ bookList }} = ctx;
-  const _bookList = toJSON(reqId, bookList);
+  const _bookList = parseJSON(reqId, bookList);
   const bookListCount = bookList.length;
 
   /**

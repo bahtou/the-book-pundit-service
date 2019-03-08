@@ -1,9 +1,9 @@
-const { toJSON } = _require('utils');
+const { parseJSON } = _require('utils');
 
 
 async function processBookReviews(ctx, next) {
   const { reqId, state:{ bookReviews }} = ctx;
-  const reviews = toJSON(reqId, bookReviews[0]);
+  const reviews = parseJSON(reqId, bookReviews[0]);
   const reviewsCount = reviews.length;
 
   /**

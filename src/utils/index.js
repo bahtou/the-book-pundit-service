@@ -1,2 +1,3 @@
 module.exports.isNumber = require('./isNumber');
-module.exports.toJSON = require('./toJSON');
+module.exports.parseJSON = require('./parseJSON');
+module.exports.stringifyJSON = require('./stringifyJSON');

@@ -1,8 +1,11 @@
 const pg = _require('database/postgres');
 const { insertReview:sql } = _require('database/postgres/sql');
+const { stringifyJSON } = _require('utils');
 
 
 const insertIntoReview = async({ reqId, bookId, bookReviews }) => {
+  const _bookReviews = stringifyJSON(reqId, bookReviews);
+
   /**
    * * need to loop through all API returned books & insert them
    * * this temporarily pops the first element
@@ -14,7 +17,7 @@ const insertIntoReview = async({ reqId, bookId, bookReviews }) => {
   let totalTime;
   try {
     startTime = new Date().getTime();
-    await pg.none(sql, { bookId, reviews: bookReviews[0] });
+    await pg.none(sql, { bookId, reviews: _bookReviews });
     totalTime = new Date().getTime() - startTime;
   } catch (err) {
     logger.error({ reqId, err });

@@ -1,5 +1,5 @@
 const grEndpoints = _require('endpoints/gr-api');
-const { toJSON } = _require('utils');
+const { parseJSON } = _require('utils');
 
 
 const getBooksEndpoints = [ grEndpoints ];

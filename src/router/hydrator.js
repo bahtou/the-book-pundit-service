@@ -35,10 +35,9 @@ async function hydrateReviews(ctx, next) {
     throw err;
   }
 
-
   if (data && data.reviews) {
     logger.info('--cached', { reqId, bookId });
-    return ctx.body = [ data.reviews ];
+    return ctx.body = data.reviews;
   }
 
   if (data && !data.reviews) {
