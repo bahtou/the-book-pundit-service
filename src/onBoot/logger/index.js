@@ -112,6 +112,10 @@ function createLogMethod(method) {
       log = { ...log, stackTrace: stack.join('\n   ') };
     }
 
+    if (env === 'production') {
+      return process.stdout.write(`${JSON.stringify(log)}\n`);
+    }
+
     const { bgColor, fontColor, reset } = logColors[method];
     const toWrite = util.inspect(log, utilsConfig);
     const toStdOut = `${bgColor}${fontColor}${toWrite}${reset}\n\n`;
