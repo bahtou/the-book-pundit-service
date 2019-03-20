@@ -120,7 +120,6 @@ function createLogMethod(method) {
     const toWrite = util.inspect(log, utilsConfig);
     const toStdOut = `${bgColor}${fontColor}${toWrite}${reset}\n\n`;
     return process.stdout.write(toStdOut);
-
   };
 }
 

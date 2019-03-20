@@ -2,17 +2,16 @@ version: "3.7"
 
 services:
   proxy:
-    image: nginx:1.15.9-alpine
+    image: bahtou/nginx-debug
+    container_name: proxy
     logging:
       driver: fluentd
       options:
-        fluentd-address: "localhost:24224"
-        tag: "docker.proxy"
+        fluentd-address: 0.0.0.0:24224
+        tag: docker.proxy
     ports:
       - 80:80
       - 443:443
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
     networks:
       - api_net
       - monitor
@@ -24,8 +23,8 @@ services:
     logging:
       driver: fluentd
       options:
-        fluentd-address: "localhost:24224"
-        tag: "docker.service"
+        fluentd-address: 0.0.0.0:24224
+        tag: docker.app
     image: the-book-pundit
     container_name: the-book-pundit
     build:
@@ -39,7 +38,7 @@ services:
       - NODE_ENV=local
       - NODE_PORT=3000
       - APP_SERVICE=the-book-pundit
-      - GOODREADS_API_SERVICE=http://localhost:3001
+      - GOODREADS_API_SERVICE=http://0.0.0.0:3001
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_USER=pundit
@@ -77,13 +76,13 @@ services:
       - fluentbit
 
   postgres:
-    container_name: the-book-pundit-storage
     image: postgres:11.2-alpine
+    container_name: storage
     logging:
       driver: fluentd
       options:
-        fluentd-address: "localhost:24224"
-        tag: "docker.database"
+        fluentd-address: 0.0.0.0:24224
+        tag: docker.storage
     environment:
       - POSTGRES_USER=pundit
       - POSTGRES_PASSWORD=iheartbooks
@@ -98,18 +97,19 @@ services:
     networks:
       - db_net
       - monitor
+    depends_on:
+      - fluentbit
 
   elasticsearch:
-    container_name: log-database
     image: docker.elastic.co/elasticsearch/elasticsearch:6.6.2
+    container_name: log-database
     environment:
       - xpack.security.enabled=false
+      - discovery.type=single-node
     deploy:
       resources:
         reservations:
           memory: 500M
-        limits:
-          memory: 900M
       placement:
         constraints: [node.role == manager]
     volumes:
@@ -118,8 +118,8 @@ services:
       - monitor
 
   kibana:
-    container_name: log-dashboard
     image: docker.elastic.co/kibana/kibana:6.6.2
+    container_name: log-dashboard
     environment:
       - xpack.security.enabled=false
       - ELASTICSEARCH_URL=http://elasticsearch:9200
@@ -141,18 +141,13 @@ services:
   fluentbit:
     labels:
       container.description: "fluentbit container discription"
-    container_name: log-collector
-    image: fluent/fluent-bit:1.0.4
-    command: /fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf
+    image: bahtou/fluentbit-debug
     deploy:
       endpoint_mode: vip
       labels:
         service.description: "fluentbit service description"
-      mode: global
     ports:
       - 24224:24224
-    volumes:
-      - ./docker_to_es.conf:/fluent-bit/etc/fluent-bit.conf
     networks:
       - monitor
     depends_on:
@@ -162,6 +157,7 @@ networks:
   api_net:
   db_net:
   monitor:
+    attachable: true
 
 volumes:
   pgData:

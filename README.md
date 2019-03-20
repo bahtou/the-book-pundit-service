@@ -4,7 +4,9 @@ Service that manages database connections & API calls for The Book Pundit applic
 
 In order to run the full application [The Book Pundit APIs](https://github.com/bahtou/the-book-pundit-apis) must also be running.
 
-## Run
+## Build & Run
+
+`docker-compose build`
 
 `docker-compose up -d`
 
@@ -45,8 +47,20 @@ In order to run the full application [The Book Pundit APIs](https://github.com/b
 Helpful [APIs](https://www.vultr.com/api/)
 
 ### docker-machine
-docker-machine create --driver vultr --vultr-api-key=<ENTER-HERE> --vultr-region-id=3 --vultr-plan-id=202 --vultr-os-id=244 --vultr-ssh-key-id=<ENTER-HERE> --vultr-ipv6=true --vultr-tag=manager node1
+
+**Use `docker-machine` to create nodes on Vultr**
+
+`docker-machine create --driver vultr --vultr-api-key=<ENTER-HERE> --vultr-region-id=3 --vultr-plan-id=202 --vultr-os-id=244 --vultr-ssh-key-id=<ENTER-HERE> --vultr-ipv6=true --vultr-tag=manager node1`
 
 ### SSL
 
 follow this setup https://www.vultr.com/docs/setup-letsencrypt-on-linux
+
+### NOTES
+
+Use `docker-machine` copy files from local to remote
+
+`docker-machine scp ./docker-compose.prod.yml root@node1:/home/the-book-pundit-service/docker-compose.prod.yml`
+
+**copy recursively**  
+`docker-machine scp -r ./database root@node1:/home/the-book-pundit-service/database`

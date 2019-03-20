@@ -41,7 +41,6 @@ RUN set -ex; \
 COPY --from=build /opt/build/node_modules ./node_modules
 COPY ./bin ./bin
 COPY ./src ./src
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
 USER node
 
