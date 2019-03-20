@@ -62,5 +62,10 @@ Use `docker-machine` copy files from local to remote
 
 `docker-machine scp ./docker-compose.prod.yml root@node1:/home/the-book-pundit-service/docker-compose.prod.yml`
 
+`docker-machine scp ./docker-compose.prod.yml root@node1:/home/the-book-pundit-apis/docker-compose.prod.yml`
+
 **copy recursively**  
 `docker-machine scp -r ./database root@node1:/home/the-book-pundit-service/database`
+
+**test fluentbit log driver**  
+`docker run --network=logging_monitor --log-driver=fluentd -t ubuntu echo "test logging now"`

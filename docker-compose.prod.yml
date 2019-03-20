@@ -121,7 +121,6 @@ services:
     labels:
       container.description: "fluentbit container discription"
     image: bahtou/fluentbit:latest
-    command: /fluent-bit/bin/fluent-bit -c /fluent-bit/etc/fluent-bit.conf
     deploy:
       endpoint_mode: vip
       labels:
